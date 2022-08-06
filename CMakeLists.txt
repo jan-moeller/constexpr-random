@@ -25,6 +25,8 @@ cmake_minimum_required(VERSION 3.20)
 project(constexpr_random)
 
 add_library(constexpr_random
+        include/crand/distributions/detail/uniform_int_distribution_details.hpp
+        include/crand/distributions/uniform_int_distribution.hpp
         include/crand/engines/detail/tiny_splitmix64.hpp
         include/crand/engines/detail/xorshift_engine_details.hpp
         include/crand/engines/detail/xoshiro256_starstar_details.hpp
@@ -49,6 +51,7 @@ fetchcontent_declare(
 fetchcontent_makeavailable(Bugspray)
 
 add_executable(constexpr_random-tests
+        test/distributions/test_uniform_int_distribution.cpp
         test/engines/helper_check_uniformness.hpp
         test/engines/test_splitmix64_engine.cpp
         test/engines/test_xorshift_engine.cpp
