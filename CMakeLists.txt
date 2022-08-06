@@ -24,6 +24,17 @@
 cmake_minimum_required(VERSION 3.20)
 project(constexpr_random)
 
+add_library(constexpr_random
+        include/crand/engines/splitmix64_engine.hpp
+        )
+target_include_directories(constexpr_random PUBLIC include/)
+set_target_properties(constexpr_random PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(constexpr_random PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+        )
+
 include(FetchContent)
 fetchcontent_declare(
         Bugspray
@@ -34,6 +45,7 @@ fetchcontent_makeavailable(Bugspray)
 
 add_executable(constexpr_random-tests
         test/engines/helper_check_uniformness.hpp
+        test/engines/test_splitmix64_engine.cpp
         )
 target_link_libraries(constexpr_random-tests PUBLIC bugspray-with-main constexpr_random)
 set_target_properties(constexpr_random-tests PROPERTIES
