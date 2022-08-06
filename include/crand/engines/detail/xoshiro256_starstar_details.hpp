@@ -25,6 +25,8 @@
 #ifndef CONSTEXPR_RANDOM_XOSHIRO256_STARSTAR_DETAILS_HPP
 #define CONSTEXPR_RANDOM_XOSHIRO256_STARSTAR_DETAILS_HPP
 
+#include "tiny_splitmix64.hpp"
+
 #include <algorithm>
 #include <array>
 
@@ -32,17 +34,9 @@
 
 namespace crand::detail::xoshiro256_starstar
 {
-constexpr auto splitmix64(std::uint64_t* state) noexcept -> std::uint64_t
-{
-    std::uint64_t result = *state += 0x9e3779b97f4a7c15;
-    result               = (result ^ (result >> 30)) * 0xbf58476d1ce4e5b9;
-    result               = (result ^ (result >> 27)) * 0x94d049bb133111eb;
-    return result ^ (result >> 31);
-};
-
 constexpr auto seed(std::uint64_t s) noexcept -> std::array<std::uint64_t, 4>
 {
-    return {splitmix64(&s), splitmix64(&s), splitmix64(&s), splitmix64(&s)};
+    return {tiny_splitmix64(&s), tiny_splitmix64(&s), tiny_splitmix64(&s), tiny_splitmix64(&s)};
 }
 
 constexpr auto advance_state(std::array<std::uint64_t, 4>& state) noexcept -> std::uint64_t
