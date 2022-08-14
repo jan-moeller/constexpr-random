@@ -34,6 +34,7 @@
 #include <random>
 
 #include <cassert>
+#include <climits>
 
 namespace crand
 {
