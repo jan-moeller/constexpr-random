@@ -30,7 +30,11 @@ TEST_CASE("uniform_real_distribution", "[distributions]")
     using namespace crand;
     xoshiro256_starstar e;
 
-    int const runs = std::is_constant_evaluated() ? 1000 : 100000;
+    int runs;
+    if (std::is_constant_evaluated())
+        runs = 1000;
+    else
+        runs = 100000;
 
     SECTION("inclusive - inclusive")
     {
