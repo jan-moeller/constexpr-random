@@ -54,7 +54,7 @@ class uniform_int_distribution
     }
 
     template<std::uniform_random_bit_generator G>
-    constexpr auto operator()(G& g) -> result_type
+    constexpr auto operator()(G& g) const -> result_type
     {
         using engine_int = std::invoke_result_t<G&>;
         using uint_t     = std::make_unsigned_t<result_type>;
