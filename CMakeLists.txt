@@ -27,6 +27,7 @@ project(constexpr_random)
 add_library(constexpr_random
         include/crand/distributions/detail/uniform_int_distribution_details.hpp
         include/crand/distributions/uniform_int_distribution.hpp
+        include/crand/distributions/uniform_real_distribution.hpp
         include/crand/engines/detail/tiny_splitmix64.hpp
         include/crand/engines/detail/xorshift_engine_details.hpp
         include/crand/engines/detail/xoshiro256_starstar_details.hpp
@@ -37,7 +38,7 @@ add_library(constexpr_random
 target_include_directories(constexpr_random PUBLIC include/)
 set_target_properties(constexpr_random PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(constexpr_random PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS NO
         )
@@ -52,6 +53,7 @@ fetchcontent_makeavailable(Bugspray)
 
 add_executable(constexpr_random-tests
         test/distributions/test_uniform_int_distribution.cpp
+        test/distributions/test_uniform_real_distribution.cpp
         test/engines/helper_check_uniformness.hpp
         test/engines/test_splitmix64_engine.cpp
         test/engines/test_xorshift_engine.cpp
@@ -59,7 +61,7 @@ add_executable(constexpr_random-tests
         )
 target_link_libraries(constexpr_random-tests PUBLIC bugspray-with-main constexpr_random)
 set_target_properties(constexpr_random-tests PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS NO
         )
