@@ -122,6 +122,9 @@ class uniform_real_distribution
         return m_int_dist.max() - m_int_dist.min();
     }
 
+    friend constexpr auto operator==(uniform_real_distribution const& lhs,
+                                     uniform_real_distribution const& rhs) noexcept -> bool = default;
+
   private:
     RealType                              m_a;
     RealType                              m_b;
