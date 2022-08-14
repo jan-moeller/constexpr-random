@@ -25,6 +25,7 @@ cmake_minimum_required(VERSION 3.20)
 project(constexpr_random)
 
 add_library(constexpr_random
+        include/crand/distributions/bernoulli_distribution.hpp
         include/crand/distributions/detail/uniform_int_distribution_details.hpp
         include/crand/distributions/normal_distribution.hpp
         include/crand/distributions/uniform_int_distribution.hpp
@@ -53,6 +54,7 @@ fetchcontent_declare(
 fetchcontent_makeavailable(Bugspray)
 
 add_executable(constexpr_random-tests
+        test/distributions/test_bernoulli_distribution.cpp
         test/distributions/test_normal_distribution.cpp
         test/distributions/test_uniform_int_distribution.cpp
         test/distributions/test_uniform_real_distribution.cpp
