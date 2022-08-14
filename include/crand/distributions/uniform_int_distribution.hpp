@@ -29,6 +29,7 @@
 #include "distribution_limits.hpp"
 
 #include <bit>
+#include <concepts>
 #include <limits>
 #include <random>
 
@@ -36,7 +37,7 @@
 
 namespace crand
 {
-template<typename IntType = int>
+template<std::integral IntType = int>
 class uniform_int_distribution
 {
   public:

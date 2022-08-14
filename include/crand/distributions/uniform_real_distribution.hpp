@@ -29,6 +29,7 @@
 #include "distribution_limits.hpp"
 #include "uniform_int_distribution.hpp"
 
+#include <concepts>
 #include <random>
 
 #include <cassert>
@@ -36,7 +37,7 @@
 
 namespace crand
 {
-template<class RealType = double>
+template<std::floating_point RealType = double>
 class uniform_real_distribution
 {
   public:
