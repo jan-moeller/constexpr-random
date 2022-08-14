@@ -26,6 +26,7 @@ project(constexpr_random)
 
 add_library(constexpr_random
         include/crand/distributions/detail/uniform_int_distribution_details.hpp
+        include/crand/distributions/normal_distribution.hpp
         include/crand/distributions/uniform_int_distribution.hpp
         include/crand/distributions/uniform_real_distribution.hpp
         include/crand/engines/detail/tiny_splitmix64.hpp
@@ -52,6 +53,7 @@ fetchcontent_declare(
 fetchcontent_makeavailable(Bugspray)
 
 add_executable(constexpr_random-tests
+        test/distributions/test_normal_distribution.cpp
         test/distributions/test_uniform_int_distribution.cpp
         test/distributions/test_uniform_real_distribution.cpp
         test/engines/helper_check_uniformness.hpp
