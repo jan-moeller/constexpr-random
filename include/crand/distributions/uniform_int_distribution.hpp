@@ -26,6 +26,7 @@
 #define CONSTEXPR_RANDOM_UNIFORM_INT_DISTRIBUTION_HPP
 
 #include "detail/uniform_int_distribution_details.hpp"
+#include "distribution_limits.hpp"
 
 #include <bit>
 #include <limits>
@@ -41,16 +42,44 @@ class uniform_int_distribution
   public:
     using result_type = IntType;
 
-    constexpr uniform_int_distribution() noexcept
-        : uniform_int_distribution(0)
+    constexpr uniform_int_distribution(inclusive<IntType> a, inclusive<IntType> b) noexcept
+        : m_a(a.value)
+        , m_b(b.value)
+        , m_min(m_a)
+        , m_max(m_b)
+        , m_range_bits(detail::uniform_int_distribution::range_bit_width(m_min, m_max))
     {
+        assert(m_a <= m_b);
     }
-    constexpr explicit uniform_int_distribution(IntType a, IntType b = std::numeric_limits<IntType>::max()) noexcept
-        : m_a(a)
-        , m_b(b)
-        , m_range_bits(detail::uniform_int_distribution::range_bit_width(a, b))
+
+    constexpr uniform_int_distribution(exclusive<IntType> a, inclusive<IntType> b) noexcept
+        : m_a(a.value)
+        , m_b(b.value)
+        , m_min(m_a + 1)
+        , m_max(m_b)
+        , m_range_bits(detail::uniform_int_distribution::range_bit_width(m_min, m_max))
     {
-        assert(a <= b);
+        assert(m_a < m_b);
+    }
+
+    constexpr uniform_int_distribution(inclusive<IntType> a, exclusive<IntType> b) noexcept
+        : m_a(a.value)
+        , m_b(b.value)
+        , m_min(m_a)
+        , m_max(m_b - 1)
+        , m_range_bits(detail::uniform_int_distribution::range_bit_width(m_min, m_max))
+    {
+        assert(m_a < m_b);
+    }
+
+    constexpr uniform_int_distribution(exclusive<IntType> a, exclusive<IntType> b) noexcept
+        : m_a(a.value)
+        , m_b(b.value)
+        , m_min(m_a + 1)
+        , m_max(m_b - 1)
+        , m_range_bits(detail::uniform_int_distribution::range_bit_width(m_min, m_max))
+    {
+        assert(m_b - m_a > 1);
     }
 
     template<std::uniform_random_bit_generator G>
@@ -72,15 +101,15 @@ class uniform_int_distribution
             auto const shift = i - m_range_bits;
             assert(shift < sizeof(result) * CHAR_BIT);
             result >>= shift;
-        } while (result > (b() - a()));
-        return result + a();
+        } while (result > (max() - min()));
+        return result + min();
     }
 
     constexpr auto a() const noexcept -> result_type { return m_a; }
     constexpr auto b() const noexcept -> result_type { return m_b; }
 
-    constexpr auto min() const noexcept -> result_type { return a(); };
-    constexpr auto max() const noexcept -> result_type { return b(); };
+    constexpr auto min() const noexcept -> result_type { return m_min; };
+    constexpr auto max() const noexcept -> result_type { return m_max; };
 
     friend constexpr auto operator==(uniform_int_distribution const& lhs, uniform_int_distribution const& rhs)
         -> bool = default;
@@ -88,6 +117,8 @@ class uniform_int_distribution
   private:
     IntType      m_a;
     IntType      m_b;
+    IntType      m_min;
+    IntType      m_max;
     std::uint8_t m_range_bits;
 };
 } // namespace crand

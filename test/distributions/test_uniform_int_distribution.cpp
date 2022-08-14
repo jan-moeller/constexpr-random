@@ -31,54 +31,107 @@ TEST_CASE("uniform_int_distribution", "[distributions]")
 {
     using namespace crand;
     xoshiro256_starstar e;
-    SECTION("distribution with same range as engine should produce same results")
-    {
-        auto          engine_copy = e;
-        constexpr int n           = 100;
 
-        uniform_int_distribution<xoshiro256_starstar::result_type> d;
-        for (int i = 0; i < n; ++i)
+    int const runs = std::is_constant_evaluated() ? 1000 : 100000;
+
+    SECTION("inclusive - inclusive")
+    {
+        SECTION("distribution with same range as engine should produce same results")
         {
-            auto const a = e();
-            auto const b = d(engine_copy);
-            CAPTURE(i);
-            REQUIRE(a == b);
+            auto engine_copy = e;
+
+            using T                       = xoshiro256_starstar::result_type;
+            T const                     a = 0;
+            T const                     b = std::numeric_limits<T>::max();
+            uniform_int_distribution<T> d(inclusive{a}, inclusive{b});
+            for (int i = 0; i < runs; ++i)
+            {
+                auto const first  = e();
+                auto const second = d(engine_copy);
+                CAPTURE(i);
+                REQUIRE(first == second);
+            }
+        }
+        SECTION("distribution with 1 element should always produce that element")
+        {
+            int const                a = 0;
+            int const                b = 0;
+            uniform_int_distribution d(inclusive{a}, inclusive{b});
+
+            for (int i = 0; i < runs; ++i)
+            {
+                auto const c = d(e);
+                REQUIRE(c == a);
+            }
+        }
+        SECTION("distributions with negative numbers")
+        {
+            int const                a = -8;
+            int const                b = 2;
+            uniform_int_distribution d(inclusive{a}, inclusive{b});
+            REQUIRE(d.a() == d.min());
+            REQUIRE(d.b() == d.max());
+            for (int i = 0; i < runs; ++i)
+            {
+                auto const c = d(e);
+                REQUIRE(c >= a);
+                REQUIRE(c <= b);
+            }
+        }
+        SECTION("Works with engine that generates fewer bits than required")
+        {
+            xorshift32                              xe;
+            std::uint64_t                           a = 0;
+            std::uint64_t                           b = std::numeric_limits<std::uint32_t>::max() + std::uint64_t(1u);
+            uniform_int_distribution<std::uint64_t> d(inclusive{a}, inclusive{b});
+            for (int i = 0; i < runs; ++i)
+            {
+                auto c = d(xe);
+                REQUIRE(c >= a);
+                REQUIRE(c <= b);
+            }
         }
     }
-    SECTION("distribution with 1 element should always produce that element")
+    SECTION("exclusive - inclusive")
     {
-        auto const elem = e();
-
-        uniform_int_distribution d(elem, elem);
-
-        constexpr auto n = 100;
-        for (int i = 0; i < n; ++i)
+        int const                a = -8;
+        int const                b = 2;
+        uniform_int_distribution d(exclusive{a}, inclusive{b});
+        REQUIRE((d.a() + 1) == d.min());
+        REQUIRE(d.b() == d.max());
+        for (int i = 0; i < runs; ++i)
         {
             auto const c = d(e);
-            REQUIRE(c == elem);
+            REQUIRE(c > a);
+            REQUIRE(c <= b);
         }
     }
-    SECTION("distributions with negative numbers")
+    SECTION("inclusive - exclusive")
     {
-        uniform_int_distribution d(-8, -3);
-        constexpr auto           n = 100;
-        for (int i = 0; i < n; ++i)
+        int const                a = -8;
+        int const                b = 2;
+        uniform_int_distribution d(inclusive{a}, exclusive{b});
+        REQUIRE(d.a() == d.min());
+        REQUIRE((d.b() - 1) == d.max());
+        for (int i = 0; i < runs; ++i)
         {
             auto const c = d(e);
-            REQUIRE(c >= d.a());
-            REQUIRE(c <= d.b());
+            REQUIRE(c >= a);
+            REQUIRE(c < b);
         }
     }
-    SECTION("Works with engine that generates fewer bits than required")
+    SECTION("exclusive - exclusive")
     {
-        xorshift32                              xe;
-        uniform_int_distribution<std::uint64_t> d(0, std::numeric_limits<std::uint32_t>::max() + std::uint64_t(1u));
-        constexpr auto                          n = 100;
-        for (int i = 0; i < n; ++i)
+        int const                a = -8;
+        int const                b = 2;
+        uniform_int_distribution d(exclusive{a}, exclusive{b});
+        REQUIRE((d.a() + 1) == d.min());
+        REQUIRE((d.b() - 1) == d.max());
+        for (int i = 0; i < runs; ++i)
         {
-            auto c = d(xe);
-            REQUIRE(c >= d.min());
-            REQUIRE(c <= d.max());
+            auto const c = d(e);
+            REQUIRE(c > a);
+            REQUIRE(c < b);
         }
     }
 }

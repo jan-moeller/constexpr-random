@@ -49,7 +49,7 @@ class uniform_real_distribution
         , m_hi(m_g > 0 ? detail::uniform_real_distribution::ceilint(m_a, m_b, m_g) : 0)
         , m_min(m_a)
         , m_max(m_b)
-        , m_int_dist(0, m_hi)
+        , m_int_dist(inclusive{std::size_t{0}}, inclusive{m_hi})
         , m_gn(std::abs(m_a) <= std::abs(m_b)
                    ? detail::uniform_real_distribution::gen_inclusive_inclusive_loe<RealType>
                    : detail::uniform_real_distribution::gen_inclusive_inclusive_nloe<RealType>)
@@ -64,7 +64,7 @@ class uniform_real_distribution
         , m_hi(detail::uniform_real_distribution::ceilint(m_a, m_b, m_g))
         , m_min(std::abs(m_a) <= std::abs(m_b) ? m_b - (m_hi - 1) * m_g : m_a + m_g)
         , m_max(m_b)
-        , m_int_dist(0, m_hi - 1)
+        , m_int_dist(inclusive{std::size_t{0}}, inclusive{m_hi - 1})
         , m_gn(std::abs(m_a) <= std::abs(m_b)
                    ? detail::uniform_real_distribution::gen_exclusive_inclusive_loe<RealType>
                    : detail::uniform_real_distribution::gen_exclusive_inclusive_nloe<RealType>)
@@ -79,7 +79,7 @@ class uniform_real_distribution
         , m_hi(detail::uniform_real_distribution::ceilint(m_a, m_b, m_g))
         , m_min(m_a)
         , m_max(std::abs(m_a) <= std::abs(m_b) ? m_b - m_g : m_a + (m_hi - 1) * m_g)
-        , m_int_dist(1, m_hi)
+        , m_int_dist(inclusive{std::size_t{1}}, inclusive{m_hi})
         , m_gn(std::abs(m_a) <= std::abs(m_b)
                    ? detail::uniform_real_distribution::gen_inclusive_exclusive_loe<RealType>
                    : detail::uniform_real_distribution::gen_inclusive_exclusive_nloe<RealType>)
@@ -94,7 +94,7 @@ class uniform_real_distribution
         , m_hi(detail::uniform_real_distribution::ceilint(m_a, m_b, m_g))
         , m_min(std::abs(m_a) <= std::abs(m_b) ? m_b - (m_hi - 1) * m_g : m_a + m_g)
         , m_max(std::abs(m_a) <= std::abs(m_b) ? m_b - m_g : m_a + (m_hi - 1) * m_g)
-        , m_int_dist(1, m_hi - 1)
+        , m_int_dist(inclusive{std::size_t{1}}, inclusive{m_hi - 1})
         , m_gn(std::abs(m_a) <= std::abs(m_b)
                    ? detail::uniform_real_distribution::gen_exclusive_exclusive_loe<RealType>
                    : detail::uniform_real_distribution::gen_exclusive_exclusive_nloe<RealType>)
