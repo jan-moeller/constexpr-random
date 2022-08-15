@@ -25,13 +25,13 @@
 #ifndef CONSTEXPR_RANDOM_UNIFORM_INT_DISTRIBUTION_HPP
 #define CONSTEXPR_RANDOM_UNIFORM_INT_DISTRIBUTION_HPP
 
-#include "detail/uniform_int_distribution_details.hpp"
-#include "distribution_limits.hpp"
+#include "crand/concepts/uniform_random_bit_generator.hpp"
+#include "crand/distributions/detail/uniform_int_distribution_details.hpp"
+#include "crand/distributions/distribution_limits.hpp"
 
 #include <bit>
 #include <concepts>
 #include <limits>
-#include <random>
 
 #include <cassert>
 #include <climits>
@@ -84,7 +84,7 @@ class uniform_int_distribution
         assert(m_b - m_a > 1);
     }
 
-    template<std::uniform_random_bit_generator G>
+    template<uniform_random_bit_generator G>
     constexpr auto operator()(G& g) const -> result_type
     {
         using engine_int = std::invoke_result_t<G&>;

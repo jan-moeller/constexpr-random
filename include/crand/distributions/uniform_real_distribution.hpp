@@ -25,12 +25,12 @@
 #ifndef CONSTEXPR_RANDOM_UNIFORM_REAL_DISTRIBUTION_HPP
 #define CONSTEXPR_RANDOM_UNIFORM_REAL_DISTRIBUTION_HPP
 
-#include "detail/uniform_real_distribution_details.hpp"
-#include "distribution_limits.hpp"
-#include "uniform_int_distribution.hpp"
+#include "crand/concepts/uniform_random_bit_generator.hpp"
+#include "crand/distributions/detail/uniform_real_distribution_details.hpp"
+#include "crand/distributions/distribution_limits.hpp"
+#include "crand/distributions/uniform_int_distribution.hpp"
 
 #include <concepts>
-#include <random>
 
 #include <cassert>
 #include <cmath>
@@ -105,7 +105,7 @@ class uniform_real_distribution
 //        assert(std::nexttoward(m_a, m_b) != m_b); // TODO: check why it doesn't compile
     }
 
-    template<std::uniform_random_bit_generator G>
+    template<uniform_random_bit_generator G>
     constexpr auto operator()(G& g) const -> result_type
     {
         auto const k = m_int_dist(g);

@@ -28,6 +28,7 @@
 
 #include <algorithm>
 #include <numbers>
+#include <numeric>
 #include <vector>
 
 template<std::floating_point T>

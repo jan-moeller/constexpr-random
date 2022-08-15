@@ -25,9 +25,8 @@
 #ifndef CONSTEXPR_RANDOM_BERNOULLI_DISTRIBUTION_HPP
 #define CONSTEXPR_RANDOM_BERNOULLI_DISTRIBUTION_HPP
 
+#include "crand/concepts/uniform_random_bit_generator.hpp"
 #include "crand/distributions/uniform_real_distribution.hpp"
-
-#include <random>
 
 namespace crand
 {
@@ -45,7 +44,7 @@ class bernoulli_distribution
     {
     }
 
-    template<std::uniform_random_bit_generator G>
+    template<uniform_random_bit_generator G>
     constexpr auto operator()(G& g) const -> result_type
     {
         return s_dist(g) < m_p;

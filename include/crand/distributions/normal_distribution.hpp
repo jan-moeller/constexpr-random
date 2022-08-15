@@ -25,12 +25,12 @@
 #ifndef CONSTEXPR_RANDOM_NORMAL_DISTRIBUTION_HPP
 #define CONSTEXPR_RANDOM_NORMAL_DISTRIBUTION_HPP
 
-#include "uniform_real_distribution.hpp"
+#include "crand/concepts/uniform_random_bit_generator.hpp"
+#include "crand/distributions/uniform_real_distribution.hpp"
 
 #include <concepts>
 #include <limits>
 #include <optional>
-#include <random>
 
 #include <cmath>
 
@@ -52,7 +52,7 @@ class normal_distribution
     {
     }
 
-    template<std::uniform_random_bit_generator G>
+    template<uniform_random_bit_generator G>
     constexpr auto operator()(G& g) -> result_type
     {
         // Marsaglia polar method
