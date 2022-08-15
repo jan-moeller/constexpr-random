@@ -31,6 +31,17 @@
 
 namespace crand
 {
+/// A random number distribution is a function object returning random numbers according to a probability density
+/// function or a discrete probability distribution.
+///
+/// # Semantic Requirements
+/// `random_number_distribution<D>` is modeled only if, given any object `d` of type `D` and any object `g` modelling
+/// `uniform_random_bit_generator`:
+/// - `d(g)` is in the range [`d.min()`, `d.max()`]
+/// - `d(g)` has amortized constant complexity
+///
+/// # Notes
+/// The function call operator need not be const, but some implementations may provide a const operator.
 template<typename D>
 concept random_number_distribution // clang-format off
     =  std::copy_constructible<D>
@@ -42,5 +53,5 @@ concept random_number_distribution // clang-format off
         { c.min() } -> std::same_as<typename D::result_type>;
         { c.max() } -> std::same_as<typename D::result_type>;
     }; // clang-format on
-}
+} // namespace crand
 #endif // CONSTEXPR_RANDOM_RANDOM_NUMBER_DISTRIBUTION_HPP

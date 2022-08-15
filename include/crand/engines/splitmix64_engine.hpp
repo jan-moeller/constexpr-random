@@ -31,6 +31,10 @@
 
 namespace crand
 {
+/// Random number engine based on the splitmix64 algorithm.
+///
+/// # Notes
+/// The `splitmix64` typedef defines the engine with the recommended parameter set.
 template<std::uint64_t m1,
          std::uint64_t m2,
          unsigned      p,
@@ -48,18 +52,35 @@ class splitmix64_engine
     static constexpr result_type default_seed  = 0xbad0ff1ced15ea5e;
     static constexpr result_type default_gamma = 0x9e3779b97f4a7c15;
 
+    /// Constructs the engine with a default seed
     constexpr splitmix64_engine() noexcept
         : splitmix64_engine(default_seed)
     {
     }
+    /// Constructs the engine
+    ///
+    /// # Parameters
+    /// - seed
+    ///     Value used to seed the engine
+    /// - gamma
+    ///     Gamma value (see original paper for description)
     constexpr explicit splitmix64_engine(result_type seed, result_type gamma = default_gamma) noexcept
         : m_state(seed)
         , m_gamma(gamma)
     {
     }
 
+    /// Re-seeds the engine
     constexpr void seed(result_type seed = default_seed) noexcept { m_state = seed; }
 
+    /// Generates a pseudo-random value. The engine state is advanced by one (the next call to this
+    /// function will return the next number in the sequence).
+    ///
+    /// # Return Value
+    /// A pseudo-random number in [`min`, `max`].
+    ///
+    /// # Complexity
+    /// Constant.
     constexpr auto operator()() noexcept -> result_type
     {
         auto x = m_state;
@@ -72,8 +93,20 @@ class splitmix64_engine
         return x;
     }
 
+    /// Advances the state by z.
+    ///
+    /// # Parameters
+    /// - z
+    ///     The number of times to advance the internal state
+    ///
+    /// # Complexity
+    /// Constant.
+    ///
+    /// # Notes
+    /// Functionally equivalent to calling `operator()` `z` times, but constant instead of linear.
     constexpr void discard(unsigned long long z) noexcept { m_state += z * m_gamma; }
 
+    /// Splits this engine, retrieving a second, seemingly independent engine.
     constexpr auto split() noexcept -> splitmix64_engine
     {
         auto const seed = (*this)();
@@ -91,9 +124,15 @@ class splitmix64_engine
         return splitmix64_engine{seed, g};
     }
 
+    /// Returns the minimum potentially generated value.
     static constexpr auto min() noexcept -> result_type { return 0; }
+    /// Returns the maximum potentially generated value.
     static constexpr auto max() noexcept -> result_type { return -1; }
 
+    /// Compares two engine objects by their internal state.
+    ///
+    /// # Notes
+    /// Not visible to ordinary unqualified or qualified lookup, can only found via ADL.
     friend constexpr auto operator==(splitmix64_engine const& lhs, splitmix64_engine const& rhs) -> bool = default;
 
   private:
@@ -101,6 +140,8 @@ class splitmix64_engine
     result_type m_gamma;
 };
 
+/// Defines the splitmix64 engine with the recommended parameter set from
+/// "Fast splittable pseudorandom number generators" by Steele, Lea & Flood, 2014.
 using splitmix64 = splitmix64_engine<0xff51afd7ed558ccd,
                                      0xc4ceb9fe1a85ec53,
                                      33,

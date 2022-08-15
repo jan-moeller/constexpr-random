@@ -38,12 +38,32 @@
 
 namespace crand
 {
+/// Produces uniformly distributed random integers.
+///
+/// The probability of a specific number being returned is `1/(max-min)`
+///
+/// # Notes
+/// - `uniform_int_distribution` satisfies `random_number_distribution`.
+/// - As its `operator()` is `const`, creating `constexpr` variables of this type can make sense.
 template<std::integral IntType = int>
 class uniform_int_distribution
 {
   public:
     using result_type = IntType;
 
+    /// Constructs a distribution that generates numbers in [a, b]
+    ///
+    /// # Parameters
+    /// - a
+    ///     lowest potentially generated value
+    /// - b
+    ///     largest potentially generated value
+    ///
+    /// # Preconditions
+    /// Behavior is undefined if `a > b`.
+    ///
+    /// # Notes
+    /// If `a == b`, the distribution will always produce the same value.
     constexpr uniform_int_distribution(inclusive<IntType> a, inclusive<IntType> b) noexcept
         : m_a(a.value)
         , m_b(b.value)
@@ -54,6 +74,16 @@ class uniform_int_distribution
         assert(m_a <= m_b);
     }
 
+    /// Constructs a distribution that generates numbers in (a, b]
+    ///
+    /// # Parameters
+    /// - a
+    ///     1 less than the lowest potentially generated value
+    /// - b
+    ///     largest potentially generated value
+    ///
+    /// # Preconditions
+    /// Behavior is undefined if `a >= b`.
     constexpr uniform_int_distribution(exclusive<IntType> a, inclusive<IntType> b) noexcept
         : m_a(a.value)
         , m_b(b.value)
@@ -64,6 +94,16 @@ class uniform_int_distribution
         assert(m_a < m_b);
     }
 
+    /// Constructs a distribution that generates numbers in [a, b)
+    ///
+    /// # Parameters
+    /// - a
+    ///     lowest potentially generated value
+    /// - b
+    ///     1 more than the largest potentially generated value
+    ///
+    /// # Preconditions
+    /// Behavior is undefined if `a >= b`.
     constexpr uniform_int_distribution(inclusive<IntType> a, exclusive<IntType> b) noexcept
         : m_a(a.value)
         , m_b(b.value)
@@ -74,6 +114,16 @@ class uniform_int_distribution
         assert(m_a < m_b);
     }
 
+    /// Constructs a distribution that generates numbers in (a, b)
+    ///
+    /// # Parameters
+    /// - a
+    ///     1 less than the lowest potentially generated value
+    /// - b
+    ///     1 more than the largest potentially generated value
+    ///
+    /// # Preconditions
+    /// Behavior is undefined if `a - b <= 1`.
     constexpr uniform_int_distribution(exclusive<IntType> a, exclusive<IntType> b) noexcept
         : m_a(a.value)
         , m_b(b.value)
@@ -84,6 +134,17 @@ class uniform_int_distribution
         assert(m_b - m_a > 1);
     }
 
+    /// Generates random integers in the desired range
+    ///
+    /// # Parameters
+    /// - g
+    ///     An object satisfying `uniform_random_bit_generator`
+    ///
+    /// # Return Value
+    ///     The generated random integer.
+    ///
+    /// # Complexity
+    ///     Amortized constant number of invocations of `g()`.
     template<uniform_random_bit_generator G>
     constexpr auto operator()(G& g) const -> result_type
     {
@@ -107,12 +168,20 @@ class uniform_int_distribution
         return result + min();
     }
 
+    /// Returns the `a` parameter the distribution was constructed with.
     constexpr auto a() const noexcept -> result_type { return m_a; }
+    /// Returns the `b` parameter the distribution was constructed with.
     constexpr auto b() const noexcept -> result_type { return m_b; }
 
+    /// Returns the minimum potentially generated value
     constexpr auto min() const noexcept -> result_type { return m_min; };
+    /// Returns the maximum potentially generated value
     constexpr auto max() const noexcept -> result_type { return m_max; };
 
+    /// Compares two distribution objects by their internal state.
+    ///
+    /// # Notes
+    /// Not visible to ordinary unqualified or qualified lookup, can only found via ADL.
     friend constexpr auto operator==(uniform_int_distribution const& lhs, uniform_int_distribution const& rhs)
         -> bool = default;
 

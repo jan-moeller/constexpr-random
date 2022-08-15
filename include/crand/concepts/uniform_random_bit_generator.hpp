@@ -29,6 +29,18 @@
 
 namespace crand
 {
+/// A uniform random bit generator is a function object returning random unsigned numbers in a fixed range where each
+/// value in the range of possible results has equal probability of being returned.
+///
+/// # Semantic Requirements
+/// `uniform_random_bit_generator` is modeled only if, given any object `g` of type `G`:
+/// - `g()` is in the range [`G::min()`, `G::max()`]
+/// - `g()` has amortized constant complexity
+///
+/// # Notes
+/// - Both `min()` and `max()` must be constant expressions.
+/// - This concept is identical to `std::uniform_random_bit_generator` from the `<random>` header. It is provided in
+///   `crand` namespace both for completeness and so users don't have to pull in all of `random` just for one concept.
 template<class G>
 concept uniform_random_bit_generator // clang-format off
     =  std::invocable<G&>

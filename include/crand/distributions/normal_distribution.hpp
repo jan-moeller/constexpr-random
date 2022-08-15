@@ -36,22 +36,45 @@
 
 namespace crand
 {
+/// Produces normal-distributed random numbers.
+///
+/// # Notes
+/// - `normal_distribution` satisfies `random_number_distribution`.
 template<std::floating_point RealType = double>
 class normal_distribution
 {
   public:
     using result_type = RealType;
 
+    /// Constructs a normal distribution with mean 0 and standard deviation 1
     constexpr normal_distribution() noexcept
         : normal_distribution(0.0)
     {
     }
+    /// Constructs a normal distribution
+    ///
+    /// # Parameters
+    /// - `mean`
+    ///     The mean value of the normal distribution
+    /// - `stddev`
+    ///     The standard deviation of the normal distribution
     constexpr explicit normal_distribution(RealType mean, RealType stddev = 1.0) noexcept
         : m_mean(mean)
         , m_stddev(stddev)
     {
     }
 
+    /// Generates random numbers according to `mean` and `stddev`
+    ///
+    /// # Parameters
+    /// - g
+    ///     An object satisfying `uniform_random_bit_generator`
+    ///
+    /// # Return Value
+    ///     The generated random number.
+    ///
+    /// # Complexity
+    ///     Amortized constant number of invocations of `g()`.
     template<uniform_random_bit_generator G>
     constexpr auto operator()(G& g) -> result_type
     {
@@ -75,12 +98,20 @@ class normal_distribution
         return u * s * m_stddev + m_mean;
     }
 
+    /// Returns the `mean` parameter the distribution was constructed with.
     constexpr auto mean() const noexcept -> result_type { return m_mean; }
+    /// Returns the `stddev` parameter the distribution was constructed with.
     constexpr auto stddev() const noexcept -> result_type { return m_stddev; }
 
+    /// Returns the minimum potentially generated value
     constexpr auto min() const noexcept -> result_type { return std::numeric_limits<result_type>::lowest(); }
+    /// Returns the maximum potentially generated value
     constexpr auto max() const noexcept -> result_type { return std::numeric_limits<result_type>::max(); }
 
+    /// Compares two distribution objects by their internal state.
+    ///
+    /// # Notes
+    /// Not visible to ordinary unqualified or qualified lookup, can only found via ADL.
     friend constexpr auto operator==(normal_distribution const& lhs, normal_distribution const& rhs) noexcept
         -> bool = default;
 

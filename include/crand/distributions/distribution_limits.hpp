@@ -27,12 +27,14 @@
 
 namespace crand
 {
+/// Marks a value as inclusive, i.e. as a closed range boundary
 template<typename T>
 struct inclusive
 {
     T value;
 };
 
+/// Marks a value as exclusive, i.e. as an open range boundary
 template<typename T>
 struct exclusive
 {
