@@ -60,6 +60,7 @@ class bernoulli_distribution
     constexpr explicit bernoulli_distribution(double p) noexcept
         : m_p(p)
     {
+        assert(p >= 0 && p <= 1);
     }
 
     /// Generates random booleans according to `p`
