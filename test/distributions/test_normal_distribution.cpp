@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
+#include "crand/concepts/random_number_distribution.hpp"
 #include "crand/distributions/normal_distribution.hpp"
 #include "crand/engines/xoshiro256_starstar_engine.hpp"
 
@@ -117,6 +118,11 @@ TEST_CASE("normal_distribution", "[distributions]")
         runs = 1000;
     else
         runs = 100000;
+
+    SECTION("satisfies random_number_distribution")
+    {
+        REQUIRE(random_number_distribution<normal_distribution<double>>);
+    }
 
     normal_distribution d{5., 2.};
     std::vector<double> samples;

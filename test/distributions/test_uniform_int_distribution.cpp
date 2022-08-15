@@ -22,10 +22,12 @@
 // SOFTWARE.
 //
 
+#include "crand/concepts/random_number_distribution.hpp"
+#include "crand/distributions/uniform_int_distribution.hpp"
+#include "crand/engines/xorshift_engine.hpp"
+#include "crand/engines/xoshiro256_starstar_engine.hpp"
+
 #include <bugspray/bugspray.hpp>
-#include <crand/distributions/uniform_int_distribution.hpp>
-#include <crand/engines/xorshift_engine.hpp>
-#include <crand/engines/xoshiro256_starstar_engine.hpp>
 
 TEST_CASE("uniform_int_distribution", "[distributions]")
 {
@@ -37,6 +39,11 @@ TEST_CASE("uniform_int_distribution", "[distributions]")
         runs = 1000;
     else
         runs = 100000;
+
+    SECTION("satisfies random_number_distribution")
+    {
+        REQUIRE(random_number_distribution<uniform_int_distribution<int>>);
+    }
 
     SECTION("inclusive - inclusive")
     {

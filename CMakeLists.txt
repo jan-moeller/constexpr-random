@@ -25,6 +25,7 @@ cmake_minimum_required(VERSION 3.20)
 project(constexpr_random)
 
 add_library(constexpr_random
+        include/crand/concepts/random_number_distribution.hpp
         include/crand/concepts/uniform_random_bit_generator.hpp
         include/crand/distributions/bernoulli_distribution.hpp
         include/crand/distributions/detail/uniform_int_distribution_details.hpp

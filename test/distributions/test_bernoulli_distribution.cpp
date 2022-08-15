@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
+#include "crand/concepts/random_number_distribution.hpp"
 #include "crand/distributions/bernoulli_distribution.hpp"
 #include "crand/engines/xoshiro256_starstar_engine.hpp"
 
@@ -38,6 +39,11 @@ TEST_CASE("bernoulli_distribution", "[distributions]")
         runs = 1000;
     else
         runs = 100000;
+
+    SECTION("satisfies random_number_distribution")
+    {
+        REQUIRE(random_number_distribution<bernoulli_distribution>);
+    }
 
     SECTION("p = 0.5")
     {

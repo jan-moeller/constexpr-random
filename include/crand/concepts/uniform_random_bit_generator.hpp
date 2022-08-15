@@ -38,6 +38,23 @@ concept uniform_random_bit_generator // clang-format off
            { G::max() } -> std::same_as<std::invoke_result_t<G&>>;
            requires std::bool_constant<(G::min() < G::max())>::value;
     }; // clang-format on
-}
+
+namespace detail::uniform_random_bit_generator
+{
+struct uniform_random_bit_generator_archetype
+{
+    uniform_random_bit_generator_archetype()                                              = delete;
+    uniform_random_bit_generator_archetype(uniform_random_bit_generator_archetype const&) = delete;
+    uniform_random_bit_generator_archetype(uniform_random_bit_generator_archetype&&)      = delete;
+    auto operator=(uniform_random_bit_generator_archetype const&)                         = delete;
+    auto operator=(uniform_random_bit_generator_archetype&&)                              = delete;
+
+    auto                  operator()() -> unsigned { return 0; };
+    constexpr static auto min() -> unsigned { return 0; }
+    constexpr static auto max() -> unsigned { return 1; }
+};
+static_assert(crand::uniform_random_bit_generator<uniform_random_bit_generator_archetype>);
+} // namespace detail::uniform_random_bit_generator
+} // namespace crand
 
 #endif // CONSTEXPR_RANDOM_UNIFORM_RANDOM_BIT_GENERATOR_HPP
